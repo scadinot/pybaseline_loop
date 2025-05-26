@@ -64,7 +64,7 @@ def calculateSignalBaseLine(signalValues, potentialValues, xPeakVoltage, exclusi
     exclusion_min = xPeakVoltage - exclusionWidth
     exclusion_max = xPeakVoltage + exclusionWidth
     weights[(potentialValues > exclusion_min) & (potentialValues < exclusion_max)] = 0.001
-    baselineValues, _ = aspls(signalValues, lam=lam, diff_order=2, weights=weights, tol=1e-2, max_iter=25)
+    baselineValues, _ = aspls(signalValues, lam=lam, diff_order=2, weights=weights, tol=1e-2, max_iter=25) # type: ignore
     return baselineValues, (exclusion_min, exclusion_max)
 
 def plotSignalAnalysis(potentialValues, signalValues, signalSmoothed, baseline, signalCorrected, xCorrectedVoltage, yCorrectedCurrent, fileName, outputFolder) -> None:
@@ -90,13 +90,13 @@ def processSignalFile(filePath, outputFolder, sep, decimal, export_processed, ex
         fileName = os.path.basename(filePath)
         dataFrame = readFile(filePath, sep=sep, decimal=decimal)
         if dataFrame is None:
-            return None
+            return {}
         
         # Extraction canal, variante et loop (itération) du nom de fichier
         m = re.match(r".*?_([0-9]{2})_SWV_(C[0-9]{2})_loop([0-9]+)\.txt$", fileName)
 
         if not m:
-            return None
+            return {}
         
         variante, canal, loop = m.group(1), m.group(2), m.group(3)
 
